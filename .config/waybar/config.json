@@ -1,0 +1,63 @@
+{
+    "layer": "bottom",
+    "position": "bottom",
+    "height": 40,
+    "modules-left": ["custom/launcher", "wlr/taskbar"],
+    "modules-center": [],
+    "modules-right": ["hyprland/workspaces", "tray", "pulseaudio", "network", "clock"],
+    
+    "custom/launcher": {
+        "format": "",
+        "on-click": "rofi -show drun",
+        "tooltip": false
+    },
+    
+    "wlr/taskbar": {
+        "format": "{icon} {title}",
+        "icon-size": 20,
+        "icon-theme": "Papirus",
+        "tooltip-format": "{title}",
+        "on-click": "minimize-raise",
+        "on-click-right": "close",
+        "ignore-list": ["rofi"],
+        "rewrite": {
+            "Firefox Web Browser": "Firefox",
+            "Visual Studio Code": "VS Code"
+        }
+    },
+    
+    "hyprland/workspaces": {
+        "format": "{name}",
+        "on-click": "activate",
+        "all-outputs": true,
+        "persistent-workspaces": {
+            "*": 10
+        }
+    },
+    
+    "clock": {
+        "format": "{:%I:%M %p\n%m/%d/%Y}",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+    },
+    
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": "",
+        "format-icons": {
+            "default": ["", "", ""]
+        },
+        "on-click": "pavucontrol"
+    },
+    
+    "network": {
+        "format-wifi": "",
+        "format-ethernet": "",
+        "format-disconnected": "󰖪",
+        "tooltip-format-disconnected": "<span color=\"#f7768e\">⚠ OFFLINE ⚠</span>\n<span color=\"#565f89\">-------------------</span>\n<span color=\"#c0caf5\">Uplink severed.</span>\n<span color=\"#c0caf5\">Scanning for signals...</span>",
+        "on-click": "nm-connection-editor"
+    },
+    
+    "tray": {
+        "spacing": 10
+    }
+}

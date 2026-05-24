@@ -1,0 +1,64 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 36,
+    "spacing": 8,
+    "modules-left": [
+        "hyprland/workspaces"
+    ],
+    "modules-center": [
+        "hyprland"
+    ],
+    "modules-right": [
+        "cpu",
+        "memory",
+        "temperature",
+        "battery",
+        "clock",
+        "tray"
+    ],
+    "cpu": {
+        "format": "\uf4bc  {usage}%",
+        "interval": 2
+    },
+    "memory": {
+        "interval": 2,
+        "states": {
+            "warning": 75,
+            "critical": 90
+        },
+        "format": "\uefc5  {percentage}%"
+    },
+    "battery": {
+        "states": {
+            "warning": 30,
+            "critical": 20
+        },
+        "format": "{icon}  {capacity}%",
+        "format-charging": "\u26a1 {capacity}%",
+        "format-plugged": "\uf1e6  {capacity}%",
+        "format-icons": [
+            "\uf244",
+            "\uf243",
+            "\uf242",
+            "\uf241",
+            "\uf240"
+        ]
+    },
+    "clock": {
+        "format": "\uf017  {:%H:%M  \uf073  %Y-%m-%d}",
+        "tooltip": false
+    },
+    "tray": {
+        "spacing": 10
+    },
+    "temperature": {
+        "critical-threshold": 80,
+        "format": "{temperatureC}\u00b0C {icon}",
+        "format-icons": [
+            "\uf2cb",
+            "\uf2c9",
+            "\uf2c7"
+        ]
+    }
+}

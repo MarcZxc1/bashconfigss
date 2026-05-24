@@ -1,0 +1,121 @@
+configuration {
+    modi:                       "drun,run,window";
+    show-icons:                 true;
+    icon-theme:                 "Papirus";
+    font:                       "JetBrainsMono Nerd Font 11";
+    drun-display-format:        "{name}";
+    hover-select:               false;
+    scroll-method:              0;
+}
+
+* {
+    bg:          #0c0c0e;
+    bg-panel:    #0f0f12;
+    bg-input:    #0a0a0c;
+    bg-selected: rgba(123,53,184,0.20);
+    border-col:  rgba(160,80,220,0.35);
+    accent:      #c084fc;
+    accent-warm: #e05a6a;
+    fg:          #d4b8f0;
+    fg-dim:      #7a6a8a;
+    fg-muted:    #3d2d4d;
+
+    background-color:            transparent;
+}
+
+window {
+    width:                       520px;
+    border:                      1px solid;
+    border-color:                @border-col;
+    border-radius:               12px;
+    padding:                     20px;
+    background-color:            @bg-panel;
+    location:                    center;
+    anchor:                      center;
+}
+
+mainbox {
+    spacing:                     10px;
+    background-color:            transparent;
+    children:                    [ "inputbar", "listview", "textbox-footer" ];
+}
+
+inputbar {
+    spacing:                     10px;
+    padding:                     10px 14px;
+    border:                      1px solid;
+    border-color:                @border-col;
+    border-radius:               8px;
+    background-color:            @bg-input;
+    children:                    [ "textbox-prompt-colon", "entry" ];
+}
+
+textbox-prompt-colon {
+    expand:                      false;
+    str:                         "";
+    text-color:                  @accent;
+    font:                        "JetBrainsMono Nerd Font Bold 12";
+    vertical-align:              0.5;
+}
+
+entry {
+    placeholder:                 "type to search...";
+    placeholder-color:           @fg-muted;
+    text-color:                  @accent;
+    vertical-align:              0.5;
+    cursor:                      text;
+}
+
+listview {
+    lines:                       7;
+    columns:                     1;
+    spacing:                     3px;
+    scrollbar:                   false;
+    fixed-height:                true;
+    layout:                      vertical;
+    background-color:            transparent;
+}
+
+element {
+    padding:                     8px 12px;
+    border-radius:               7px;
+    spacing:                     10px;
+    background-color:            transparent;
+    text-color:                  @fg-dim;
+    border:                      0px 0px 0px 2px solid;
+    border-color:                transparent;
+    cursor:                      pointer;
+    orientation:                 horizontal;
+    children:                    [ "element-icon", "element-text" ];
+}
+
+element-icon {
+    size:                        24px;
+    background-color:            transparent;
+    cursor:                      inherit;
+}
+
+element-text {
+    text-color:                  inherit;
+    background-color:            transparent;
+    vertical-align:              0.5;
+    cursor:                      inherit;
+}
+
+element selected.normal {
+    background-color:            @bg-selected;
+    text-color:                  @fg;
+    border:                      0px 0px 0px 2px solid;
+    border-color:                @accent-warm;
+    border-radius:               0px 7px 7px 0px;
+}
+
+textbox-footer {
+    expand:                      false;
+    content:                     "↑↓ navigate · enter select · esc close";
+    text-color:                  @fg-muted;
+    font:                        "JetBrainsMono Nerd Font 10";
+    horizontal-align:            1.0;
+    vertical-align:              0.5;
+    background-color:            transparent;
+}
