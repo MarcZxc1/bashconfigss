@@ -1,86 +1,61 @@
 * {
-    /* Use the same font you installed for Rofi */
     font-family: "JetBrainsMono Nerd Font", sans-serif;
     font-size: 13px;
     font-weight: normal;
     border: none;
     border-radius: 0;
+    box-shadow: none;
+    text-shadow: none;
+    transition: none;
 }
 
 window#waybar {
-    background-color: #1a1b26; /* Dark charcoal */
-    color: #c0caf5;            /* Light blue/grey text */
+    background-color: transparent;
+    color: #d4b8f0;
 }
 
-/* Unified styling for all modules on the right */
-#cpu, #memory, #temperature, #battery, #clock, #tray {
+#cpu, #memory, #temperature, #battery, #clock, #tray, #network, #pulseaudio {
     padding: 0 12px;
     margin: 4px 4px;
-    background-color: #15161e;
+    background-color: #0f0f12;
+    color: #c084fc;
     border-radius: 8px;
 }
 
-/* Style the Workspaces */
 #workspaces button {
     padding: 0 10px;
-    color: #565f89; /* Muted grey for empty workspaces */
-    transition: none; /* Disable animations */
-    text-shadow: none;
-    box-shadow: none;
-}
-
-#workspaces button.active {
-    color: #1a1b26; /* Dark text */
-    background-color: #82aaff; /* Bright blue highlight */
-    border-radius: 8px;
     margin: 4px;
-    transition: none; /* Disable animations */
-}
-
-#workspaces button:hover {
-    background-color: #c0caf5;
-    color: #1a1b26;
-}
-
-/* Center window title */
-#window {
-    color: #82aaff;
-}
-
-/* Futuristic Tooltip Styling */
-tooltip {
-    background: rgba(26, 27, 38, 0.9);
-    border: 1px solid #82aaff;
+    color: #7a6a8a;
+    background: transparent;
+    background-image: none;
     border-radius: 8px;
-    box-shadow: 0px 0px 15px rgba(130, 170, 255, 0.3);
+}
+
+window#waybar #workspaces button:hover {
+    background: rgba(192, 132, 252, 0.2);
+    background-image: none;
+    color: #c084fc;
+    border-bottom: 2px solid #e05a6a;
+}
+
+window#waybar #workspaces button.active {
+    color: #d4b8f0;
+    background: rgba(123, 53, 184, 0.3);
+    background-image: none;
+    border-bottom: 2px solid #e05a6a;
+    border-radius: 8px;
+}
+
+#window {
+    color: #c084fc;
+}
+
+tooltip {
+    background: #0f0f12;
+    border: 1px solid #c084fc;
+    border-radius: 8px;
 }
 
 tooltip label {
-    color: #c0caf5;
-    padding: 6px 10px;
-}
-
-/* Network Disconnected State (Glowing Red) */
-#network.disconnected {
-    color: #f7768e;
-    text-shadow: 0px 0px 8px rgba(247, 118, 142, 0.7);
-}
-
-/* Creates a flashing animation */
-@keyframes blink {
-    to {
-        background-color: #ffffff;
-        color: #ff0000;
-    }
-}
-
-/* When hardware hits critical thresholds */
-#battery.critical:not(.charging), #temperature.critical, #memory.critical {
-    background-color: #ff0000;
-    color: #ffffff;
-    animation-name: blink;
-    animation-duration: 0.5s;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
+    color: #d4b8f0;
 }

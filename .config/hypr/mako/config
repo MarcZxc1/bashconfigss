@@ -1,0 +1,52 @@
+# Global settings for standard notifications (Horizontal Rofi Theme)
+anchor=top-right
+font=JetBrainsMono Nerd Font 11
+width=350
+margin=10,20
+padding=6
+border-size=2
+border-radius=8
+background-color=#0c0c0e
+text-color=#ffffff
+border-color=#c084fc
+default-timeout=10000
+
+[urgency=low]
+background-color=#0c0c0e
+text-color=#cccccc
+border-color=#3d2d4d
+
+[urgency=normal]
+background-color=#0c0c0e
+text-color=#ffffff
+border-color=#c084fc
+
+[urgency=critical]
+background-color=#0c0c0e
+text-color=#ffffff
+border-color=#e05a6a
+border-size=2
+
+# OSD specifically for volume and brightness bars
+[app-name=OSD]
+anchor=center-right
+font=JetBrainsMono Nerd Font 14
+width=40
+height=250
+margin=0,0
+padding=5
+background-color=#00000000
+text-color=#c084fc
+border-size=0
+default-timeout=1000
+text-alignment=center
+format=%b
+
+# CPU Power notifications - Wider and lower height
+[app-name=CPU-Power]
+background-color=#0c0c0e
+text-color=#ffffff
+border-color=#c084fc
+border-size=2
+default-timeout=3000
+format=<b>%s</b>: %b
