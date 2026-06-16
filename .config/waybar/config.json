@@ -1,8 +1,8 @@
 {
     "layer": "top",
     "position": "top",
-    "height": 36,
-    "spacing": 8,
+    "height": 28,
+    "spacing": 4,
     "modules-left": [
         "hyprland/workspaces"
     ],
@@ -18,7 +18,10 @@
     ],
     "cpu": {
         "format": "󰍛 {usage}%",
-        "interval": 2
+        "interval": 2,
+        "tooltip": true,
+        "tooltip-format": "Click to adjust CPU Frequency\nModes: Battery Saving, Balance, Performance",
+        "on-click": "~/.config/hypr/scripts/cpu_power.sh"
     },
     "memory": {
         "interval": 2,
@@ -44,7 +47,7 @@
         "tooltip": false
     },
     "tray": {
-        "spacing": 10
+        "spacing": 6
     },
     "temperature": {
         "critical-threshold": 80,

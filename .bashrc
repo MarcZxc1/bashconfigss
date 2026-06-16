@@ -86,6 +86,7 @@ alias gp='git push'
 alias update='yay -Syu' # FIXED FOR ARCH LINUX!
 alias conf='cd ~/.config'
 alias config='/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME'
+alias push-config='/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME push origin main'
 
 # --- NEW VISUAL DESIGN (POWERLINE STYLE) ---
 if [[ ${EUID} == 0 ]] ; then

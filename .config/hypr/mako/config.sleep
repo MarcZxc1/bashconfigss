@@ -1,0 +1,12 @@
+[app-name=Sleep-Anim]
+anchor=center
+width=1920
+height=1080
+margin=0,0
+padding=0
+background-color=#00000000
+border-size=0
+default-timeout=2000
+text-alignment=center
+format=%i
+max-icon-size=1920

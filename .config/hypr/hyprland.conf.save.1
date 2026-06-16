@@ -1,4 +1,4 @@
-
+\
 # Windows-like Hyprland v0.55.2 Configuration
 
 ### --- MONITOR CONFIG ---
@@ -6,34 +6,26 @@
 monitor=,preferred,auto,auto
 
 ### --- STARTUP ---
-# 1. Critical UI (Load Immediately)
 exec-once = ~/.config/hypr/scripts/set_theme.sh
+exec-once = ~/.config/hypr/scripts/monitor_daemon.sh &
 exec-once = waybar &
+exec-once = hypridle
 exec-once = awww-daemon
+exec-once = awww img ~/.config/hypr/current_wallpaper.jpg
+exec-once = nm-applet --indicator
+exec-once = blueman-applet
+exec-once = udiskie &
 exec-once = mako -c ~/.config/hypr/mako/config
-# (Wait 1 second for daemon to initialize before loading image)
-exec-once = sleep 1 && awww img ~/.config/hypr/ARCH.avif
-
-# 2. System Daemons (Wait 2 seconds)
-exec-once = sleep 2 && ~/.config/hypr/scripts/monitor_daemon.sh &
-exec-once = sleep 2 && hypridle
-exec-once = sleep 2 && hyprswitch init --show-title &
-
-# 3. Heavy Background Applets (Wait 4 seconds so UI doesn't freeze)
-exec-once = sleep 4 && gnome-keyring-daemon --start --components=secrets
-exec-once = sleep 4 && gnome-clocks --gapplication-service &
+# hyprswitch daemon for Alt+Tab overlay
+exec-once = hyprswitch init --show-title &
+exec-once = gnome-keyring-daemon --start --components=secrets
 exec-once = /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
-exec-once = sleep 5 && nm-applet --indicator
-exec-once = sleep 5 && blueman-applet
-exec-once = sleep 6 && udiskie &
 
 ### --- GENERAL & LAYOUT ---
 general {
-    gaps_in = 0
+    gaps_in = 4
     gaps_out = 0
-    border_size = 1
-    col.active_border = rgba(c084fcee) rgba(e05a6aee) 45deg
-    col.inactive_border = rgba(595959aa)
+    border_size = 0
     layout = dwindle
 }
 
@@ -41,10 +33,6 @@ dwindle {
     preserve_split = 1
     force_split = 2 # Split right/down like Windows
 }
-
-# No gaps when only one window is open
-workspace = w[tv1], gapsout:0, gapsin:0, border:0, rounding:0
-workspace = f[1], gapsout:0, gapsin:0, border:0, rounding:0
 
 decoration {
     rounding = 8
@@ -90,13 +78,12 @@ input {
     kb_layout = us
     follow_mouse = 1
     touchpad {
-        natural_scroll = 1
+        natural_scroll = 0
         tap-to-click = 1
-        middle_button_emulation = 1
     }
 }
 
-### --- THEME ---
+#THEME
 env = GTK_THEME,Arc-Dark
 env = XDG_MENU_PREFIX,arch-
 env = QT_QPA_PLATFORMTHEME,gtk3
@@ -121,7 +108,7 @@ bind = $mainMod, B, exec, brave
 bind = $mainMod, W, exec, killall -SIGUSR1 waybar
 bind = $mainMod, K, exec, kitty
 bind = $mainMod, D, exec, discord
-bind = $mainMod, G, exec, ~/.config/hypr/scripts/sleep_animation.sh
+bind = $mainMod, G, exec, ~/.config/hypr/scripts/cpu_power.sh
 bind = $mainMod, N, exec, ~/.config/hypr/scripts/toggle_night.sh
 bind = $mainMod, X, exec, ~/.config/hypr/scripts/power_menu.sh
 bind = $mainMod, P, exec, ~/.config/hypr/scripts/display_manager.sh
@@ -143,9 +130,10 @@ bind = $mainMod, Right, movewindow, r
 bind = $mainMod SHIFT, Left, movewindow, l
 bind = $mainMod SHIFT, Right, movewindow, r
 
-# Alt+Tab (Switching Apps)
-bind = ALT, Tab, exec, rofi -show window -config ~/.config/rofi/config.rasi
-# bind = ALT, Tab, exec, hyprswitch gui --mod-key alt_l --key tab --close mod-key-release --reverse-key=mod=shift
+# Alt+Tab (hyprswitch)
+# GUI mode with preview
+bind = ALT, Tab, exec, hyprswitch gui --mod-key alt_l --key tab --close mod-key-release --reverse-key=mod=shift
+bind = ALT SHIFT, Tab, exec, hyprswitch gui --mod-key alt_l --key tab --close mod-key-release --reverse-key=mod=shift --reverse
 
 # Workspaces (Virtual Desktops)
 bind = $mainMod CTRL, Left, workspace, -1
@@ -186,8 +174,8 @@ bind = $mainMod SHIFT CTRL, 5, movetoworkspace, 5
 bind = $mainMod, Tab, exec, rofi -show window
 
 # Audio / Volume Control
-bindel = , XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%+ && wpctl set-mute @DEFAULT_AUDIO_SINK@ 0 && ~/.config/hypr/scripts/volume_osd.sh
-bindel = , XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%- && wpctl set-mute @DEFAULT_AUDIO_SINK@ 0 && ~/.config/hypr/scripts/volume_osd.sh
+bindel = , XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ && wpctl set-mute @DEFAULT_AUDIO_SINK@ 0 && ~/.config/hypr/scripts/volume_osd.sh
+bindel = , XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && wpctl set-mute @DEFAULT_AUDIO_SINK@ 0 && ~/.config/hypr/scripts/volume_osd.sh
 bindl = , XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && ~/.config/hypr/scripts/volume_osd.sh
 bindl = , XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
 
@@ -197,15 +185,15 @@ bindl = , XF86AudioNext, exec, playerctl next
 bindl = , XF86AudioPrev, exec, playerctl previous
 
 # Brightness Control
-bindel = , XF86MonBrightnessUp, exec, brightnessctl s 2%+ && ~/.config/hypr/scripts/brightness_osd.sh
-bindel = , XF86MonBrightnessDown, exec, brightnessctl s 2%- && ~/.config/hypr/scripts/brightness_osd.sh
+bindel = , XF86MonBrightnessUp, exec, brightnessctl s 5%+ && ~/.config/hypr/scripts/brightness_osd.sh
+bindel = , XF86MonBrightnessDown, exec, brightnessctl s 5%- && ~/.config/hypr/scripts/brightness_osd.sh
 
 # Fallback Keybindings (Super + Function Keys)
-bindel = $mainMod, F12, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%+ && wpctl set-mute @DEFAULT_AUDIO_SINK@ 0 && ~/.config/hypr/scripts/volume_osd.sh
-bindel = $mainMod, F11, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%- && wpctl set-mute @DEFAULT_AUDIO_SINK@ 0 && ~/.config/hypr/scripts/volume_osd.sh
+bindel = $mainMod, F12, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ && wpctl set-mute @DEFAULT_AUDIO_SINK@ 0 && ~/.config/hypr/scripts/volume_osd.sh
+bindel = $mainMod, F11, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && wpctl set-mute @DEFAULT_AUDIO_SINK@ 0 && ~/.config/hypr/scripts/volume_osd.sh
 bindl = $mainMod, F10, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && ~/.config/hypr/scripts/volume_osd.sh
-bindel = $mainMod, F6, exec, brightnessctl s 2%+ && ~/.config/hypr/scripts/brightness_osd.sh
-bindel = $mainMod, F5, exec, brightnessctl s 2%- && ~/.config/hypr/scripts/brightness_osd.sh
+bindel = $mainMod, F6, exec, brightnessctl s 5%+ && ~/.config/hypr/scripts/brightness_osd.sh
+bindel = $mainMod, F5, exec, brightnessctl s 5%- && ~/.config/hypr/scripts/brightness_osd.sh
 bindl = $mainMod, F8, exec, playerctl play-pause
 bindl = $mainMod, F9, exec, playerctl next
 bindl = $mainMod, F7, exec, playerctl previous
@@ -219,7 +207,10 @@ bindm = $mainMod, mouse:272, movewindow
 bindm = $mainMod, mouse:273, resizewindow
 
 ### --- WINDOW RULES (v0.55.2 Syntax) ---
-# Floating common apps (Redundant now, but kept for clarity)
+# Default behavior: Everything opens maximized (takes entire screen, no splitting)
+windowrule = maximize 1, match:class .*
+
+# Floating common apps
 windowrule = float 1, match:class ^(pavucontrol)$
 windowrule = float 1, match:class ^(nm-applet)$
 windowrule = float 1, match:class ^(blueman-manager)$
@@ -250,13 +241,6 @@ windowrule = keep_aspect_ratio 1, match:class ^(mpv)$
 windowrule = float 1, match:workspace ^(special:scratchpad)$
 windowrule = size 80% 85%, match:workspace ^(special:scratchpad)$
 windowrule = center 1, match:workspace ^(special:scratchpad)$
-
-# Waybar Popups (Clocks)
-windowrule = workspace special:clock_popup, match:class ^(org.gnome.clocks)$
-windowrule = float 1, match:class ^(org.gnome.clocks)$
-windowrule = size 500 400, match:class ^(org.gnome.clocks)$
-windowrule = move 31.7% 35, match:class ^(org.gnome.clocks)$
-windowrule = animation popin, match:class ^(org.gnome.clocks)$
 
 # Persistent Workspaces (Windows-like)
 workspace = 1, persistent:true, name:Desktop 1
