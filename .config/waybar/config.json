@@ -42,6 +42,8 @@
         "format-icons": ["󰁺", "󰁼", "󰁾", "󰂀", "󰁹"]
     },
     "clock": {
+        "interval": 10,
+        "timezone": "Asia/Manila",
         "format": "󰥔 {:%H:%M}",
         "format-alt": "󰥔 {:%H:%M  󰃭 %Y-%m-%d}",
         "tooltip": false

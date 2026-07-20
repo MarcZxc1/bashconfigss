@@ -9,16 +9,16 @@ configuration {
 }
 
 * {
-    bg:          #0c0c0e;
-    bg-panel:    #0f0f12;
-    bg-input:    #0a0a0c;
-    bg-selected: rgba(123,53,184,0.20);
-    border-col:  rgba(160,80,220,0.35);
-    accent:      #c084fc;
-    accent-warm: #e05a6a;
-    fg:          #d4b8f0;
-    fg-dim:      #7a6a8a;
-    fg-muted:    #3d2d4d;
+    bg:          #111111;
+    bg-panel:    #121212;
+    bg-input:    #0e0e0e;
+    bg-selected: #2a2a2a;
+    border-col:  #444444;
+    accent:      #aaaaaa;
+    accent-warm: #888888;
+    fg:          #cccccc;
+    fg-dim:      #666666;
+    fg-muted:    #333333;
 
     background-color:            transparent;
 }

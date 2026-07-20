@@ -87,6 +87,8 @@ alias update='yay -Syu' # FIXED FOR ARCH LINUX!
 alias conf='cd ~/.config'
 alias config='/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME'
 alias push-config='/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME push origin main'
+alias dps='docker ps'
+alias drm='docker rm -f'
 
 # --- NEW VISUAL DESIGN (POWERLINE STYLE) ---
 if [[ ${EUID} == 0 ]] ; then
@@ -108,3 +110,8 @@ export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$PATH:$HOME/explore/flutter/bin"
+
+
+# Added by Antigravity CLI installer
+export PATH="/home/marc/.local/bin:$PATH"
+. "$HOME/.cargo/env"

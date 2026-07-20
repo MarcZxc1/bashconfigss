@@ -95,6 +95,30 @@ apply_layout() {
     notify-send "Display Profile" "Applied: $mode ($align)"
 }
 
+# --- DIRECT MODES ---
+case "${1:-}" in
+    --auto-extend)
+        apply_layout "Extend" "External Right"
+        exit 0
+        ;;
+    --auto-internal)
+        apply_layout "Internal Only" "Standard"
+        exit 0
+        ;;
+    --internal-only)
+        apply_layout "Internal Only" "Standard"
+        exit 0
+        ;;
+    --external-only)
+        apply_layout "External Only" "Standard"
+        exit 0
+        ;;
+    --mirror)
+        apply_layout "Mirror" "Standard"
+        exit 0
+        ;;
+esac
+
 # --- MENU SYSTEM ---
 MAIN_OPTIONS="Extend\nMirror\nExternal Only\nInternal Only"
 CHOICE=$(echo -e "$MAIN_OPTIONS" | rofi -dmenu -i -p "Mode:")
