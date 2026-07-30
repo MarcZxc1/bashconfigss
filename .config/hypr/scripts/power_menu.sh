@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+set -u
 
 # Define options
 shutdown="󰐥  Shutdown"
@@ -12,18 +14,29 @@ options="$shutdown\n$reboot\n$suspend\n$logout"
 # Show Rofi menu
 chosen=$(echo -e "$options" | rofi -dmenu -i -p "Power Menu" -config ~/.config/rofi/config.rasi)
 
+confirm_action() {
+    local action="$1"
+    local answer
+
+    answer="$(
+        printf 'Cancel\n%s\n' "$action" |
+            rofi -dmenu -i -p "Confirm $action?"
+    )"
+    [ "$answer" = "$action" ]
+}
+
 # Apply choice
 case "$chosen" in
     "$shutdown")
-        systemctl poweroff
+        confirm_action "Shutdown" && systemctl poweroff
         ;;
     "$reboot")
-        systemctl reboot
+        confirm_action "Reboot" && systemctl reboot
         ;;
     "$suspend")
         systemctl suspend
         ;;
     "$logout")
-        hyprctl dispatch exit
+        confirm_action "Logout" && uwsm stop
         ;;
 esac

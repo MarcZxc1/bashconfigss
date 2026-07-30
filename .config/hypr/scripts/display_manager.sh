@@ -15,12 +15,22 @@ if [[ -z "$EXTERNAL" || "$EXTERNAL" == "null" ]]; then
     exit 0
 fi
 
-# 2. STABLE CONFIGURATION
-EXT_RES="1366x768@59.79" 
-EXT_W=1366
-EXT_H=768
-INT_W=1366
-INT_H=768
+# 2. PREFERRED MODES AND LIVE LOGICAL SIZES
+# Avoid forcing every external display to the laptop panel's 1366x768 mode.
+EXT_RES="preferred"
+EXT_W=$(echo "$MONITORS_JSON" | jq -r --arg name "$EXTERNAL" \
+    '.[] | select(.name == $name) | .width' | head -n 1)
+EXT_H=$(echo "$MONITORS_JSON" | jq -r --arg name "$EXTERNAL" \
+    '.[] | select(.name == $name) | .height' | head -n 1)
+INT_W=$(echo "$MONITORS_JSON" | jq -r --arg name "$INTERNAL" \
+    '.[] | select(.name == $name) | .width' | head -n 1)
+INT_H=$(echo "$MONITORS_JSON" | jq -r --arg name "$INTERNAL" \
+    '.[] | select(.name == $name) | .height' | head -n 1)
+
+[[ "$EXT_W" =~ ^[1-9][0-9]*$ ]] || EXT_W=1366
+[[ "$EXT_H" =~ ^[1-9][0-9]*$ ]] || EXT_H=768
+[[ "$INT_W" =~ ^[1-9][0-9]*$ ]] || INT_W=1366
+[[ "$INT_H" =~ ^[1-9][0-9]*$ ]] || INT_H=768
 
 # Function to route workspaces correctly
 route_workspaces() {
@@ -29,16 +39,27 @@ route_workspaces() {
 
     for i in {1..5}; do
         hyprctl keyword workspace "$i, monitor:$primary" > /dev/null
-        hyprctl dispatch moveworkspacetomonitor "$i" "$primary" > /dev/null 2>&1
+        hyprctl eval "
+            hl.dispatch(hl.dsp.workspace.move({
+                workspace = $i,
+                monitor = \"$primary\",
+            }))
+        " > /dev/null 2>&1
     done
 
     if [[ -n "$secondary" ]]; then
         for i in {6..10}; do
             hyprctl keyword workspace "$i, monitor:$secondary" > /dev/null
-            hyprctl dispatch moveworkspacetomonitor "$i" "$secondary" > /dev/null 2>&1
+            hyprctl eval "
+                hl.dispatch(hl.dsp.workspace.move({
+                    workspace = $i,
+                    monitor = \"$secondary\",
+                }))
+            " > /dev/null 2>&1
         done
     fi
-    hyprctl dispatch workspace 1 > /dev/null
+    hyprctl eval \
+        'hl.dispatch(hl.dsp.focus({ workspace = 1 }))' > /dev/null
 }
 
 apply_layout() {

@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+set -u
+
+CALLBACK=""
+SELECTED_ROW=""
+ARGS=("$@")
+
+while (( $# > 0 )); do
+    case "$1" in
+        -on-selection-changed)
+            CALLBACK="${2:-}"
+            shift 2
+            ;;
+        -selected-row)
+            SELECTED_ROW="${2:-}"
+            shift 2
+            ;;
+        *)
+            shift
+            ;;
+    esac
+done
+
+/usr/bin/cp /dev/stdin "${MOCK_ROFI_INPUT:?}"
+printf '%s\n' "${ARGS[*]}" > "${MOCK_ROFI_ARGS:?}"
+printf '%s\n' "$SELECTED_ROW" > "${MOCK_ROFI_SELECTED_ROW:?}"
+: > "${MOCK_ROFI_READY:?}"
+
+run_callback() {
+    local address="$1"
+    local command="${CALLBACK//\{entry\}/$address}"
+
+    /usr/bin/bash -c "$command"
+}
+
+case "${MOCK_ROFI_BEHAVIOR:-wait}" in
+    accept)
+        printf '%s\n' "${MOCK_ROFI_SELECTION:?}"
+        exit 0
+        ;;
+    cancel)
+        exit 1
+        ;;
+    hover)
+        IFS=',' read -ra EVENTS <<< "${MOCK_ROFI_SEQUENCE:?}"
+        for event in "${EVENTS[@]}"; do
+            address="${event%%:*}"
+            pause="${event#*:}"
+            sleep "$pause"
+            run_callback "$address"
+        done
+        [ -z "${MOCK_ROFI_EVENTS_DONE:-}" ] || : > "$MOCK_ROFI_EVENTS_DONE"
+        ;;
+    wait)
+        ;;
+    *)
+        printf 'unsupported mock Rofi behavior: %s\n' "$MOCK_ROFI_BEHAVIOR" >&2
+        exit 2
+        ;;
+esac
+
+trap 'exit 143' TERM INT
+while :; do
+    sleep 0.01
+done

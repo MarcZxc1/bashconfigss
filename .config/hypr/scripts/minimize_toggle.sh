@@ -61,7 +61,9 @@ minimize_active() {
     mkdir -p "$(dirname "$STACK_FILE")"
     remove_from_stack "$address"
     printf '%s\n' "$address" >> "$STACK_FILE"
-    hyprctl dispatch movetoworkspacesilent "$SPECIAL_WS" >/dev/null
+    hyprctl eval \
+        "hl.dispatch(hl.dsp.window.move({ workspace = \"$SPECIAL_WS\", follow = false }))" \
+        >/dev/null
 }
 
 last_minimized_address() {
@@ -94,7 +96,9 @@ float_like_windows() {
     if [ -z "$address" ] || ! hyprctl clients -j | jq -e --arg address "$address" \
         '.[] | select(.address == $address and .floating == true)' \
         >/dev/null; then
-        hyprctl dispatch setfloating >/dev/null 2>&1 || true
+        hyprctl eval \
+            'hl.dispatch(hl.dsp.window.float({ action = "set" }))' \
+            >/dev/null 2>&1 || true
     fi
 
     read -r width height < <(
@@ -106,18 +110,31 @@ float_like_windows() {
     if [[ "${width:-}" =~ ^[0-9]+$ ]] && [[ "${height:-}" =~ ^[0-9]+$ ]]; then
         target_width=$((width * 92 / 100))
         target_height=$((height * 88 / 100))
-        hyprctl dispatch resizeactive exact "$target_width" "$target_height" >/dev/null 2>&1 || true
+        hyprctl eval "
+            hl.dispatch(hl.dsp.window.resize({
+                x = $target_width,
+                y = $target_height,
+                relative = false,
+            }))
+        " >/dev/null 2>&1 || true
     fi
 
-    hyprctl dispatch centerwindow >/dev/null 2>&1 || true
+    hyprctl eval \
+        'hl.dispatch(hl.dsp.window.center())' \
+        >/dev/null 2>&1 || true
 }
 
 activate_window() {
     local address="$1"
 
-    hyprctl dispatch focuswindow "address:$address" >/dev/null
-    hyprctl dispatch alterzorder "top,address:$address" >/dev/null 2>&1 || true
-    hyprctl dispatch bringactivetotop >/dev/null 2>&1 || true
+    hyprctl eval "
+        hl.dispatch(hl.dsp.focus({ window = \"address:$address\" }))
+        hl.dispatch(hl.dsp.window.alter_zorder({
+            mode = \"top\",
+            window = \"address:$address\",
+        }))
+        hl.dispatch(hl.dsp.window.bring_to_top())
+    " >/dev/null
 }
 
 restore_last() {
@@ -135,7 +152,13 @@ restore_last() {
     fi
 
     workspace="$(current_workspace_id)"
-    hyprctl dispatch movetoworkspacesilent "$workspace,address:$address" >/dev/null
+    hyprctl eval "
+        hl.dispatch(hl.dsp.window.move({
+            workspace = $workspace,
+            follow = false,
+            window = \"address:$address\",
+        }))
+    " >/dev/null
     activate_window "$address"
     float_like_windows "$address"
     activate_window "$address"

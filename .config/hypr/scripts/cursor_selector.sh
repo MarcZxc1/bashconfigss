@@ -4,6 +4,22 @@ set -u
 
 SIZE=24
 HYPR_CONF="$HOME/.config/hypr/hyprland.conf"
+UWSM_ENV="$HOME/.config/uwsm/env"
+UWSM_HYPR_ENV="$HOME/.config/uwsm/env-hyprland"
+
+update_export() {
+    local file="$1"
+    local key="$2"
+    local value="$3"
+
+    mkdir -p "$(dirname "$file")"
+    touch "$file"
+    if grep -q "^export ${key}=" "$file"; then
+        sed -i "s/^export ${key}=.*/export ${key}=${value}/" "$file"
+    else
+        printf 'export %s=%s\n' "$key" "$value" >> "$file"
+    fi
+}
 
 theme_exists() {
     local theme="$1"
@@ -80,5 +96,10 @@ if [ -w "$HYPR_CONF" ]; then
         -e "s/^env = HYPRCURSOR_SIZE,.*/env = HYPRCURSOR_SIZE,$SIZE/" \
         "$HYPR_CONF"
 fi
+
+update_export "$UWSM_ENV" "XCURSOR_THEME" "$theme"
+update_export "$UWSM_ENV" "XCURSOR_SIZE" "$SIZE"
+update_export "$UWSM_HYPR_ENV" "HYPRCURSOR_THEME" "$theme"
+update_export "$UWSM_HYPR_ENV" "HYPRCURSOR_SIZE" "$SIZE"
 
 notify-send -a "System" "Cursor Updated" "Theme set to $theme."

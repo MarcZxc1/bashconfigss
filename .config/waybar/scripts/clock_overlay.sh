@@ -29,4 +29,5 @@ fi
 
 # 3. Toggle visibility
 # We use the special workspace toggle
-hyprctl dispatch togglespecialworkspace "$WORKSPACE"
+hyprctl eval \
+    "hl.dispatch(hl.dsp.workspace.toggle_special(\"$WORKSPACE\"))"

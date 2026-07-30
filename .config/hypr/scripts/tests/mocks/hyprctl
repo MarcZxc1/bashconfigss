@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -u
+
+LOG_FILE="${MOCK_HYPRCTL_LOG:?}"
+printf '%s\n' "$*" >> "$LOG_FILE"
+
+case "${1:-} ${2:-}" in
+    "activewindow -j")
+        sleep "${MOCK_HYPRCTL_DELAY:-0}"
+        /usr/bin/cat "${MOCK_ACTIVE_JSON:?}"
+        ;;
+    "clients -j")
+        sleep "${MOCK_HYPRCTL_DELAY:-0}"
+        /usr/bin/cat "${MOCK_CLIENTS_JSON:?}"
+        ;;
+    "eval "*)
+        exit "${MOCK_EVAL_STATUS:-0}"
+        ;;
+    *)
+        printf 'unsupported mock hyprctl call: %s\n' "$*" >&2
+        exit 1
+        ;;
+esac
