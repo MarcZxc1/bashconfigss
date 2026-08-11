@@ -15,18 +15,13 @@ hl.config({
             active_border = "rgba(888888ee)",
             inactive_border = "rgba(444444aa)",
         },
-        layout = "dwindle",
-    },
-
-    dwindle = {
-        preserve_split = true,
-        force_split = 2,
-        smart_split = false,
-        smart_resizing = true,
+        -- Monocle is Hyprland's native full-work-area window stack. It keeps
+        -- the familiar maximized-window workflow without per-window IPC.
+        layout = "monocle",
     },
 
     decoration = {
-        rounding = 8,
+        rounding = 0,
         shadow = {
             enabled = false,
         },

@@ -7,8 +7,7 @@ ADDRESS="${1:-${ROFI_INFO:-}}"
 [[ "$ADDRESS" == 0x* ]] || exit 1
 
 # One fresh snapshot protects against selecting a window that closed while the
-# menu was open. Workspace, focus, and z-order changes are then one synchronous
-# compositor round trip.
+# menu was open. Workspace and focus changes are one compositor round trip.
 CLIENTS_JSON="$(hyprctl clients -j 2>/dev/null)" || exit 1
 TARGET_WORKSPACE="$(
     jq -er --arg address "$ADDRESS" \
@@ -21,8 +20,4 @@ TARGET_WORKSPACE="$(
 hyprctl eval "
     hl.dispatch(hl.dsp.focus({ workspace = ${TARGET_WORKSPACE} }))
     hl.dispatch(hl.dsp.focus({ window = \"address:${ADDRESS}\" }))
-    hl.dispatch(hl.dsp.window.alter_zorder({
-        mode = \"top\",
-        window = \"address:${ADDRESS}\",
-    }))
 " >/dev/null 2>&1

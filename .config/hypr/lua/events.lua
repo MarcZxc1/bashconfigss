@@ -1,7 +1,6 @@
 local home = assert(os.getenv("HOME"), "HOME is not set")
 local config_home = os.getenv("XDG_CONFIG_HOME") or (home .. "/.config")
 local scripts = config_home .. "/hypr/scripts/"
-local startup_timers = {}
 local hotplug_timers = {}
 
 local function run_after(storage, timeout, command)
@@ -15,25 +14,6 @@ end
 
 hl.on("hyprland.start", function()
     hl.exec_cmd(scripts .. "set_theme.sh")
-    -- Waybar 0.15.0-2 uses the legacy workspace-click IPC command, which
-    -- breaks with a Lua-configured Hyprland. Use the locally built upstream
-    -- revision containing the Lua IPC compatibility fix.
-    hl.exec_cmd("systemctl --user start waybar.service")
-    hl.exec_cmd("awww-daemon")
-    hl.exec_cmd("mako -c " .. config_home .. "/hypr/mako/config")
-    hl.exec_cmd("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
-
-    run_after(startup_timers, 1000, "awww img " .. home .. "/Pictures/miyamoto.png")
-    run_after(startup_timers, 2000, scripts .. "window_open_focus.sh")
-    run_after(startup_timers, 2000, "hypridle")
-    run_after(
-        startup_timers,
-        4000,
-        "gnome-keyring-daemon --start --components=secrets"
-    )
-    run_after(startup_timers, 5000, "nm-applet --indicator")
-    run_after(startup_timers, 5000, "blueman-applet")
-    run_after(startup_timers, 6000, "udiskie")
 end)
 
 -- Native monitor events replace monitor_daemon.sh and its permanent

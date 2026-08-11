@@ -1,14 +1,14 @@
 #!/bin/bash
 
-SHADER="/usr/share/hyprshade/shaders/blue-light-filter.glsl"
-STATE_FILE="/tmp/.night_mode_active"
+SHADER="blue-light-filter"
 
-if [ -f "$STATE_FILE" ]; then
-    hyprctl keyword decoration:screen_shader ""
-    rm "$STATE_FILE"
-    notify-send -a "System" "Night Mode" "Disabled" -i notification-display-brightness
-else
-    hyprctl keyword decoration:screen_shader "$SHADER"
-    touch "$STATE_FILE"
+if ! hyprshade toggle "$SHADER"; then
+    notify-send -a "System" -u critical "Night Mode" "Could not change the screen shader"
+    exit 1
+fi
+
+if [ "$(hyprshade current)" = "$SHADER" ]; then
     notify-send -a "System" "Night Mode" "Enabled" -i notification-display-brightness-low
+else
+    notify-send -a "System" "Night Mode" "Disabled" -i notification-display-brightness
 fi

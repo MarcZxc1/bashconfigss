@@ -1,4 +1,4 @@
--- Smart gaps retained for the occasional tiled window.
+-- Monocle should always consume the complete work area.
 hl.workspace_rule({ workspace = "w[tv1]", gaps_out = 0, gaps_in = 0 })
 hl.workspace_rule({ workspace = "f[1]", gaps_out = 0, gaps_in = 0 })
 
@@ -23,16 +23,6 @@ hl.layer_rule({
     no_anim = true,
 })
 
--- Windows/Zorin-style stacking: ordinary applications fill the work area as
--- floating windows. window_open_focus.sh trims large windows around Waybar.
-hl.window_rule({
-    name = "windows-like-default",
-    match = { class = ".*" },
-    float = true,
-    size = "100% 100%",
-    center = true,
-})
-
 -- Let modal dialogs activate above their parent without permanently locking
 -- focus to the first dialog. A global stay_focused rule breaks nested flows:
 -- the Save dialog can otherwise steal focus back from its own overwrite
@@ -54,6 +44,8 @@ hl.window_rule({
     match = {
         title = "^(Confirm Save( As)?|Replace File|File Already Exists)$",
     },
+    float = true,
+    center = true,
     focus_on_activate = true,
     dim_around = true,
 })
@@ -63,6 +55,7 @@ hl.window_rule({
     match = {
         class = "^(pavucontrol|blueman-manager|gnome-calculator|org.gnome.Calculator)$",
     },
+    float = true,
     size = "70% 70%",
     center = true,
 })
@@ -70,6 +63,7 @@ hl.window_rule({
 hl.window_rule({
     name = "about-dialog",
     match = { title = "^(About).*$" },
+    float = true,
     size = "55% 55%",
     center = true,
 })
@@ -86,6 +80,7 @@ hl.window_rule({
 hl.window_rule({
     name = "imv-size",
     match = { class = "^(imv)$" },
+    float = true,
     size = "800 600",
     center = true,
 })
@@ -93,6 +88,9 @@ hl.window_rule({
 hl.window_rule({
     name = "mpv-aspect-ratio",
     match = { class = "^(mpv)$" },
+    float = true,
+    size = "80% 80%",
+    center = true,
     keep_aspect_ratio = true,
 })
 
@@ -117,10 +115,10 @@ hl.window_rule({
 hl.workspace_rule({
     workspace = "1",
     persistent = true,
-    default_name = "Desktop 1",
+    default_name = "1",
 })
 hl.workspace_rule({
     workspace = "2",
     persistent = true,
-    default_name = "Desktop 2",
+    default_name = "2",
 })

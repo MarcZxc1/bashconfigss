@@ -5,6 +5,9 @@ fish_add_path -g ~/.pyenv/bin
 fish_add_path -g ~/.local/bin
 fish_add_path -g ~/explore/flutter/bin
 fish_add_path -g ~/.cargo/bin
+set fish_greeting ""
+
+starship init fish | source
 
 # --- INIT SCRIPTS ---
 # Initialize Pyenv
@@ -43,7 +46,6 @@ alias push-config='/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME
 alias dps='docker ps'
 alias drm='docker rm -f'
 alias codexsession='tmux new -A -s codex'
-
 
 # --- FUNCTIONS ---
 function current_time
@@ -100,11 +102,13 @@ end
 # --- AUTOSTART HYPRLAND ---
 if status is-login
     if uwsm check may-start
-        exec uwsm start hyprland.desktop > /dev/null 2>&1
+        exec uwsm start hyprland.desktop >/dev/null 2>&1
     end
 end
-
 
 # >>> grok installer >>>
 fish_add_path $HOME/.grok/bin
 # <<< grok installer <<<
+
+# opencode
+fish_add_path /home/marc/.opencode/bin

@@ -66,19 +66,21 @@ apply_layout() {
     local mode=$1
     local align=$2
     local batch_cmd=""
+    local route_primary=""
+    local route_secondary=""
 
     case "$mode" in
         "Internal Only")
             batch_cmd="keyword monitor $INTERNAL, preferred, 0x0, 1 ; keyword monitor $EXTERNAL, disable"
-            route_workspaces "$INTERNAL" ""
+            route_primary="$INTERNAL"
             ;;
         "External Only")
             batch_cmd="keyword monitor $INTERNAL, disable ; keyword monitor $EXTERNAL, $EXT_RES, 0x0, 1"
-            route_workspaces "$EXTERNAL" ""
+            route_primary="$EXTERNAL"
             ;;
         "Mirror")
             batch_cmd="keyword monitor $INTERNAL, preferred, 0x0, 1 ; keyword monitor $EXTERNAL, $EXT_RES, 0x0, 1, mirror, $INTERNAL"
-            route_workspaces "$INTERNAL" ""
+            route_primary="$INTERNAL"
             ;;
         "Extend")
             # Logic for mouse navigation based on alignment
@@ -96,23 +98,18 @@ apply_layout() {
                     batch_cmd="keyword monitor $INTERNAL, preferred, 0x0, 1 ; keyword monitor $EXTERNAL, $EXT_RES, 0x${INT_H}, 1"
                     ;;
             esac
-            route_workspaces "$INTERNAL" "$EXTERNAL"
+            route_primary="$INTERNAL"
+            route_secondary="$EXTERNAL"
             ;;
     esac
 
+    # Apply monitor geometry before assigning workspaces to those monitors.
     hyprctl --batch "$batch_cmd"
-    
-    # UI Refresh
-    sleep 1
-    # Refresh Wallpaper with awww
-    if pgrep -x "awww-daemon" > /dev/null; then
-        awww img "/home/marc/.config/hypr/arch1-wallpaper.png" > /dev/null
-    fi
-    # Force Waybar to restart and pick up new monitors
-    killall waybar > /dev/null 2>&1
-    sleep 0.5
-    waybar > /dev/null 2>&1 &
-    
+    route_workspaces "$route_primary" "$route_secondary"
+
+    # Keep Waybar under systemd so monitor refreshes retain restart tracking.
+    systemctl --user try-restart waybar.service
+
     notify-send "Display Profile" "Applied: $mode ($align)"
 }
 

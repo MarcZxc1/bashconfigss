@@ -36,51 +36,6 @@ show_feedback() {
     fi
 }
 
-apply_mode() {
-    local mode="$1"
-    local hwmon
-
-    hwmon="$(find_hwmon)" || {
-        echo "Dell fan hwmon not found" >&2
-        exit 1
-    }
-
-    case "$mode" in
-        auto)
-            echo 0 > "$hwmon/pwm1_enable"
-            ;;
-        quiet)
-            echo 1 > "$hwmon/pwm1_enable"
-            echo 96 > "$hwmon/pwm1"
-            ;;
-        balanced)
-            echo 1 > "$hwmon/pwm1_enable"
-            echo 160 > "$hwmon/pwm1"
-            ;;
-        cool)
-            echo 1 > "$hwmon/pwm1_enable"
-            echo 220 > "$hwmon/pwm1"
-            ;;
-        max)
-            echo 1 > "$hwmon/pwm1_enable"
-            echo 255 > "$hwmon/pwm1"
-            ;;
-        *)
-            echo "Unknown mode: $mode" >&2
-            exit 1
-            ;;
-    esac
-
-    sleep 1
-    read_status "$hwmon"
-}
-
-if [[ "${1:-}" == "--apply" ]]; then
-    shift
-    apply_mode "${1:-}"
-    exit 0
-fi
-
 if ! command -v rofi >/dev/null 2>&1; then
     echo "rofi is not installed" >&2
     exit 1
@@ -96,22 +51,23 @@ mode_value="${status%% *}"
 mode_value="${mode_value#mode=}"
 current_pwm="${status#*pwm=}"
 current_pwm="${current_pwm%% *}"
-current_rpm="${status##*rpm=}"
+current_rpm="${status#*rpm=}"
+current_rpm="${current_rpm%% *}"
 
 case "$mode_value" in
     0) current_mode="auto" ;;
-    1) current_mode="manual" ;;
+    1) current_mode="firmware/temporary" ;;
     *) current_mode="unknown" ;;
 esac
 
 set +e
 choice="$(
     printf '%s\n' \
-        "Auto (BIOS)" \
-        "Quiet" \
-        "Balanced" \
-        "Cool" \
-        "Max Cooling" \
+        "Automatic (firmware default)" \
+        "Quiet (temporary)" \
+        "Balanced (temporary)" \
+        "Cool (temporary)" \
+        "Max Cooling (temporary)" \
         | rofi -dmenu -i -p "Fan: ${current_mode} ${current_pwm} / ${current_rpm} RPM" -config "$HOME/.config/rofi/config.rasi"
 )"
 rofi_status=$?
@@ -122,21 +78,22 @@ if (( rofi_status != 0 )); then
 fi
 
 case "$choice" in
-    "Auto (BIOS)") target=auto ;;
-    "Quiet") target=quiet ;;
-    "Balanced") target=balanced ;;
-    "Cool") target=cool ;;
-    "Max Cooling") target=max ;;
+    "Automatic (firmware default)") target=auto ;;
+    "Quiet (temporary)") target=quiet ;;
+    "Balanced (temporary)") target=balanced ;;
+    "Cool (temporary)") target=cool ;;
+    "Max Cooling (temporary)") target=max ;;
     *) exit 0 ;;
 esac
 
-if pkexec env DISPLAY="${DISPLAY:-}" WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-}" XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-}" "$0" --apply "$target"; then
+if pkexec /usr/local/libexec/dell-fan-profile "$target"; then
     after="$(read_status "$hwmon")"
     after_mode="${after%% *}"
     after_mode="${after_mode#mode=}"
     after_pwm="${after#*pwm=}"
     after_pwm="${after_pwm%% *}"
-    after_rpm="${after##*rpm=}"
+    after_rpm="${after#*rpm=}"
+    after_rpm="${after_rpm%% *}"
     after_temp1="${after#*temp1=}"
     after_temp1="${after_temp1%% *}"
     after_temp2="${after#*temp2=}"

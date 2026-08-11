@@ -3,5 +3,6 @@
 
 require("lua.options")
 require("lua.rules")
+require("lua.workflow")
 require("lua.bindings")
 require("lua.events")

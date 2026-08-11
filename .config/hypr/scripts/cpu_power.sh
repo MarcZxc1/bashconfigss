@@ -14,15 +14,15 @@ chosen="$(
 
 case "$chosen" in
     "$performance")
-        preference="performance"
+        profile="performance"
         label="Performance"
         ;;
     "$balance")
-        preference="balance_power"
+        profile="balanced"
         label="Balanced"
         ;;
     "$batterysaving")
-        preference="power"
+        profile="power"
         label="Battery Saving"
         ;;
     *)
@@ -30,15 +30,9 @@ case "$chosen" in
         ;;
 esac
 
-available="/sys/devices/system/cpu/cpu0/cpufreq/energy_performance_available_preferences"
-if [ ! -r "$available" ] || ! grep -qw "$preference" "$available"; then
-    notify-send -a "CPU-Power" "CPU Power" "The $label profile is unavailable."
-    exit 1
-fi
-
-# Invoke the fixed system binary through polkit. This avoids an invisible sudo
-# prompt from Waybar and does not elevate this user-writable script itself.
-if pkexec /usr/bin/cpupower set -e "$preference"; then
+# The root-owned helper validates the profile and changes both Dell's platform
+# profile and Intel's energy/performance preference as one operation.
+if pkexec /usr/local/libexec/dell-power-profile "$profile"; then
     notify-send -a "CPU-Power" "CPU Power" "Mode set to $label"
 else
     notify-send -a "CPU-Power" "CPU Power" "Profile change was cancelled or denied."

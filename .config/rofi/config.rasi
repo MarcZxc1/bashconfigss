@@ -17,8 +17,8 @@ configuration {
     accent:      #aaaaaa;
     accent-warm: #888888;
     fg:          #cccccc;
-    fg-dim:      #666666;
-    fg-muted:    #333333;
+    fg-dim:      #999999;
+    fg-muted:    #777777;
 
     background-color:            transparent;
 }
